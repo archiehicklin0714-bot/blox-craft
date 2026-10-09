@@ -1,1 +1,53 @@
-
+{
+  "project": {
+    "title": "Obby Craft",
+    "tagline": "Jump a Roblox-style obby inside Minecraft.",
+    "host": {"game": "minecraft-java", "role": "primary", "loader": "fabric"},
+    "companions": [{"game": "roblox", "role": "companion", "path_token": "{game:roblox}"}],
+    "multiplayer": false
+  },
+  "sounds": {
+    "columns": ["id", "trigger", "source_game", "source_file", "volume", "verified"],
+    "rows": [
+      {"id": "oof", "trigger": "player_falls_off_course", "source_game": "roblox", "source_file": "", "volume": 1.0, "verified": false},
+      {"id": "jump", "trigger": "player_jumps_on_pad", "source_game": "roblox", "source_file": "", "volume": 0.8, "verified": false},
+      {"id": "checkpoint", "trigger": "checkpoint_reached", "source_game": "roblox", "source_file": "", "volume": 0.9, "verified": false}
+    ]
+  },
+  "textures": {
+    "columns": ["id", "applies_to", "source_game", "source_file", "verified"],
+    "rows": [
+      {"id": "obby_block", "applies_to": "obby_block", "source_game": "roblox", "source_file": "", "verified": false},
+      {"id": "spawn_pad", "applies_to": "spawn_pad", "source_game": "roblox", "source_file": "", "verified": false}
+    ]
+  },
+  "blocks": {
+    "columns": ["id", "texture", "behavior", "solid"],
+    "rows": [
+      {"id": "obby_block", "texture": "obby_block", "behavior": "plain", "solid": true},
+      {"id": "spawn_pad", "texture": "spawn_pad", "behavior": "spawn_point", "solid": true},
+      {"id": "checkpoint_pad", "texture": "spawn_pad", "behavior": "set_checkpoint", "solid": true},
+      {"id": "finish_pad", "texture": "spawn_pad", "behavior": "finish_course", "solid": true},
+      {"id": "kill_floor", "texture": "obby_block", "behavior": "respawn_at_checkpoint", "solid": false}
+    ]
+  },
+  "courses": {
+    "columns": ["id", "name", "checkpoints", "finish_block", "has_timer", "best_time_record"],
+    "rows": [
+      {"id": "course_1", "name": "First Steps", "checkpoints": ["checkpoint_pad"], "finish_block": "finish_pad", "has_timer": true, "best_time_record": true}
+    ]
+  },
+  "systems": {
+    "columns": ["id", "hook", "uses", "verified"],
+    "rows": [
+      {"id": "respawn", "hook": "player_fall_below_y", "uses": ["sounds.oof", "blocks.kill_floor"], "verified": false},
+      {"id": "checkpoint", "hook": "player_steps_on_block", "uses": ["sounds.checkpoint", "blocks.checkpoint_pad"], "verified": false},
+      {"id": "timer", "hook": "course_start_to_finish", "uses": ["courses.course_1"], "verified": false},
+      {"id": "best_time_store", "hook": "course_finish", "uses": ["courses.course_1"], "verified": false}
+    ]
+  },
+  "preflight_open_items": [
+    "sounds.*.source_file empty: find readable Roblox audio in the install",
+    "textures.*.source_file empty: find readable Roblox textures in the install"
+  ]
+}
